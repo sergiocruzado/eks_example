@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+    reverse-proxy:
+        image: traefik:v2.3
+        command: --api.insecure=true --providers.docker
+        ports:
+        - "80:80"
+        - "8080:8080"
+        volumes:
+        # So that Traefik can listen to the Docker events
+        - /var/run/docker.sock:/var/run/docker.sock
+    web1:
+        labels: 
+            - "traefik.enable=true"
+            - "traefik.http.routers.app1.rule=Host(`app1.localhost`)"
+            - "traefik.http.routers.app1.entrypoints=http"
+        build: app1/
+        ports: 
+            - 5000:5000
+    web2:
+        labels: 
+            - "traefik.enable=true"
+            - "traefik.http.routers.app2.rule=Host(`app2.localhost`)"
+            - "traefik.http.routers.app2.entrypoints=http"
+        build: app2/
+        ports: 
+            - 5001:5001

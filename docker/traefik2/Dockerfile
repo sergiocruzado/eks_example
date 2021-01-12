@@ -1,0 +1,4 @@
+FROM traefik:v2.3
+
+EXPOSE 80
+EXPOSE 8080
